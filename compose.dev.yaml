@@ -1,0 +1,35 @@
+# Override de desenvolvimento.
+# Uso: docker compose -f compose.yaml -f compose.dev.yaml up --build
+#
+# - Monta o código do host (live-reload do PHP via artisan serve).
+# - Sobe um servidor Vite com HMR (hot reload de CSS/JS/Blade).
+# - Volumes anônimos preservam vendor/node_modules/public/build vindos
+#   da imagem (não dependem de nada instalado no host e evitam lentidão
+#   de bind mount no Windows/macOS).
+
+services:
+    app:
+        build:
+            target: dev
+        environment:
+            APP_ENV: local
+            APP_DEBUG: 'true'
+        volumes:
+            - '.:/var/www/html'
+            - '/var/www/html/vendor'
+            - '/var/www/html/public/build'
+
+    vite:
+        image: 'node:22-alpine'
+        working_dir: /var/www/html
+        command: sh -c "npm install --no-audit --no-fund && npm run dev -- --host 0.0.0.0 --port ${VITE_PORT:-5173}"
+        ports:
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        environment:
+            VITE_PORT: '${VITE_PORT:-5173}'
+            VITE_HMR_HOST: '${VITE_HMR_HOST:-localhost}'
+        volumes:
+            - '.:/var/www/html'
+            - '/var/www/html/node_modules'
+        networks:
+            - sail

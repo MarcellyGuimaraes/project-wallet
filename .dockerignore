@@ -1,0 +1,35 @@
+.git
+.gitignore
+.gitattributes
+
+# Dependências (reconstruídas dentro da imagem)
+vendor
+node_modules
+
+# Assets compilados (gerados na stage de build)
+public/build
+public/hot
+
+# Ambiente e caches locais
+.env
+.env.*
+!.env.example
+storage/*.key
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+bootstrap/cache/*.php
+
+# Ferramentas / IDE
+.idea
+.vscode
+.fleet
+Dockerfile
+compose.yaml
+docker-compose.yml
+*.md
+
+# SO
+.DS_Store
+Thumbs.db
