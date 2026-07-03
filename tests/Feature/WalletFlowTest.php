@@ -21,6 +21,18 @@ class WalletFlowTest extends TestCase
         $this->get('/dashboard')->assertRedirect('/login');
     }
 
+    public function test_guests_see_the_home_page(): void
+    {
+        $this->get('/')->assertOk()->assertSee('Criar conta');
+    }
+
+    public function test_authenticated_users_are_redirected_from_home_to_dashboard(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get('/')->assertRedirect(route('dashboard'));
+    }
+
     public function test_a_user_can_register_and_is_logged_in(): void
     {
         Livewire::test(Register::class)

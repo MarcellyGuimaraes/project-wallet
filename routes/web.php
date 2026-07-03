@@ -3,6 +3,7 @@
 use App\Livewire\Admin\Users as AdminUsers;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Home;
 use App\Livewire\Wallet\Dashboard;
 use App\Livewire\Wallet\Deposit;
 use App\Livewire\Wallet\History;
@@ -10,7 +11,7 @@ use App\Livewire\Wallet\Transfer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/login');
+Route::get('/', Home::class)->name('home');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');

@@ -48,7 +48,16 @@ case "$1" in
         php artisan storage:link || true
 
         echo "Iniciando o servidor em http://0.0.0.0:8000"
-        exec php artisan serve --host=0.0.0.0 --port=8000
+        # `php artisan serve` só repassa uma lista fixa de variáveis de
+        # ambiente (Illuminate\Foundation\Console\ServeCommand::$passthroughVariables)
+        # para o processo do servidor embutido do PHP — DB_*, SESSION_*, etc.
+        # (definidas via `environment:` no compose.yaml) NÃO estão nessa lista
+        # e são descartadas, fazendo o servidor cair de volta para os valores
+        # do .env (sqlite) em vez do Postgres real. Chamamos o `php -S`
+        # diretamente com o mesmo router do Laravel para herdar o ambiente
+        # completo do container.
+        cd public
+        exec php -S 0.0.0.0:8000 ../vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php
         ;;
     queue)
         exec php artisan queue:work --tries=3 --timeout=90

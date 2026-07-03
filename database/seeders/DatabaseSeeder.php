@@ -18,13 +18,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        if (! User::where('email', 'test@example.com')->exists()) {
-            User::factory()->create([
-                'name' => 'Test User',
-                'email' => 'test@example.com',
-            ]);
-        }
-
         // firstOrNew + atribuição direta: contorna o mass-assignment
         // (is_admin não está no Fillable) e deixa o cast "hashed" cuidar da senha.
         $admin = User::firstOrNew(['email' => 'souzaguimaraesmarcelly@gmail.com']);
