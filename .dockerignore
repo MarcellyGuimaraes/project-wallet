@@ -21,6 +21,10 @@ storage/framework/views/*
 storage/logs/*
 bootstrap/cache/*.php
 
+# Symlink recreated at container start by `php artisan storage:link`;
+# a host-created link breaks the Docker build context.
+public/storage
+
 # Ferramentas / IDE
 .idea
 .vscode

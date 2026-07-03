@@ -1,58 +1,120 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Wallet — Carteira Financeira
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Desafio técnico full stack: uma aplicação web onde usuários se cadastram, autenticam e
+realizam depósitos, transferências e estornos, com saldo consistente sob concorrência
+e histórico auditável de todas as movimentações.
 
-## About Laravel
+## Stack e por quê
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Laravel 13 + Livewire 4 (TALL stack)** — o desafio pede "uma interface funcional",
+  não apenas uma API. Livewire permite construir essa interface inteira em PHP/Blade,
+  sem duplicar regras de validação e de negócio em um front-end separado, mantendo o
+  time de uma pessoa só e o código mais simples de revisar.
+- **PostgreSQL** — suporta bem `SELECT ... FOR UPDATE`, essencial para o requisito de
+  atomicidade nas operações financeiras (ver [Concorrência e atomicidade](#concorrência-e-atomicidade)).
+- **bcmath** — todo valor monetário é tratado como `string` decimal (nunca `float`) e
+  somado/subtraído com `bcadd`/`bcsub`/`bccomp`, evitando erros de arredondamento
+  binário em dinheiro.
+- **Docker** — `docker compose up --build` sobe app + banco sem exigir PHP/Composer/Node
+  instalados na máquina do avaliador. Detalhes completos em [GUIA.md](GUIA.md).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Como rodar
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Forma recomendada (única dependência: Docker):
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+docker compose up --build
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Acesse http://localhost:8000. Migrations, chave da aplicação e link de storage são
+gerados automaticamente pelo entrypoint. Passo a passo completo, variáveis de
+ambiente e modo de desenvolvimento com hot-reload em [GUIA.md](GUIA.md).
 
-## Contributing
+Para rodar os testes dentro do container:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+docker compose exec app php artisan test
+```
 
-## Code of Conduct
+## Modelagem de dados
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **`users`** — dados de cadastro (nome, e-mail, CPF/CNPJ validado por dígito
+  verificador, senha).
+- **`wallets`** — saldo em uma tabela **separada** do usuário (1:1), para não misturar
+  identidade com estado financeiro e deixar explícito que o saldo tem suas próprias
+  regras de concorrência.
+- **`transactions`** — histórico imutável de toda movimentação: `type` (deposit,
+  transfer, reversal), `status` (completed, reversed, failed), `amount`,
+  `from_wallet_id`/`to_wallet_id` (nullable — depósito não tem origem) e
+  `original_transaction_id`, que liga um estorno à transação que ele desfez. Nenhuma
+  linha é apagada ou sobrescrita: reverter marca a original como `reversed` e cria uma
+  **nova** transação do tipo `reversal` — o histórico serve como trilha de auditoria.
 
-## Security Vulnerabilities
+## Regras de negócio
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **Depósito**: soma ao saldo da própria carteira. Se o saldo estiver negativo, a soma
+  simples já "abate" a diferença — não é um caso especial, é a mesma operação.
+- **Transferência**: debita o remetente e credita o destinatário na mesma transação de
+  banco. Bloqueada se o remetente não tiver saldo suficiente (saldo pode chegar a
+  exatamente zero, não abaixo disso).
+- **Estorno**: desfaz um depósito ou uma transferência `completed`, devolvendo o valor
+  para quem tinha antes. Um estorno **não pode** ser estornado, e uma transação já
+  revertida não pode ser revertida de novo. Isso pode, deliberadamente, deixar uma
+  carteira negativa — se o dinheiro estornado já tiver sido usado, o requisito do
+  desafio já cobre esse caso ("caso o saldo da pessoa esteja negativo por algum
+  motivo, no depósito deve acrescentar ao valor").
+- **Autorização**: só o dono de uma carteira participante (origem ou destino) pode
+  solicitar o estorno de uma transação.
 
-## License
+## Concorrência e atomicidade
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Toda operação financeira roda dentro de `DB::transaction()` e usa
+`lockForUpdate()` nas linhas de carteira envolvidas **antes** de ler o saldo, prevenindo
+condições de corrida (ex.: duas transferências simultâneas do mesmo saldo). Quando duas
+carteiras são bloqueadas (transferência e estorno de transferência), o lock é sempre
+adquirido em ordem crescente de `id`, para que duas operações concorrentes em sentidos
+opostos não se enforquem uma na outra (deadlock). Um estorno também relê o status da
+transação com lock dentro da transação de banco, para impedir que dois cliques de
+"reverter" simultâneos revertam a mesma transação duas vezes.
+
+## Arquitetura
+
+```
+app/
+├── Enums/                     TransactionType, TransactionStatus
+├── Exceptions/                Exceções de domínio (WalletException e subclasses)
+├── Livewire/
+│   ├── Auth/                  Register, Login
+│   └── Wallet/                Dashboard, Deposit, Transfer, History
+├── Models/                    User, Wallet, Transaction
+├── Rules/                     CpfOrCnpj (validação com dígito verificador)
+└── Services/
+    ├── Auth/RegisterUserService.php
+    └── Wallet/
+        ├── DepositService.php
+        ├── TransferService.php
+        └── ReversalService.php
+```
+
+Componentes Livewire são a camada de apresentação: validam entrada e delegam a regra
+de negócio a um Service. Cada Service tem uma única responsabilidade (SRP) — depositar,
+transferir e estornar não compartilham uma classe "WalletService" genérica, o que torna
+cada regra fácil de testar isoladamente e evita que uma mudança em uma operação
+arrisque quebrar outra.
+
+## Testes
+
+`tests/Unit/Services` cobre as regras de negócio diretamente (depósito cura saldo
+negativo, transferência bloqueia saldo insuficiente, estorno não pode ser duplicado,
+autorização de estorno). `tests/Feature/WalletFlowTest.php` exercita o fluxo completo
+através dos componentes Livewire (registro, login, depósito, transferência, estorno).
+
+```bash
+php artisan test
+```
+
+## O que não foi feito
+
+- Verificação de e-mail e recuperação de senha (fora do escopo do desafio).
+- Paginação de histórico usa `LatestPagination` simples; não há filtro por tipo/data na UI.
+- Observabilidade fica limitada aos logs padrão do Laravel — não há Telescope instalado.
