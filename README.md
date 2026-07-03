@@ -18,7 +18,32 @@ e histórico auditável de todas as movimentações.
 - **Docker** — `docker compose up --build` sobe app + banco sem exigir PHP/Composer/Node
   instalados na máquina do avaliador. Detalhes completos em [GUIA.md](GUIA.md).
 
+## Branches e fluxo de trabalho
+
+O repositório segue um fluxo simples inspirado no Git Flow. **Use a branch `develop`** —
+é o ambiente de desenvolvimento e concentra a versão mais recente e completa da aplicação
+(gestão de usuários, UI, correções). É a partir dela que o projeto deve ser rodado e avaliado.
+
+| Branch | Papel |
+|--------|-------|
+| **`develop`** | **Branch ativa de desenvolvimento — a que deve ser usada.** Integra tudo o que já foi concluído; sempre a mais atualizada. |
+| `feature/projeto-wallet` | Branch de _feature_ onde o núcleo da carteira (auth + operações financeiras) foi construído, antes de ser integrado à `develop`. |
+| `master` | Linha estável/base do projeto (setup inicial + suporte a Docker). Não recebe trabalho do dia a dia. |
+| `base` | Ponto de partida do repositório (esqueleto do projeto). |
+
+Antes de rodar, garanta que está na `develop`:
+
+```bash
+git checkout develop
+git pull            # se houver remoto configurado
+```
+
+Para contribuir: crie uma branch `feature/...` a partir da `develop`, desenvolva e depois
+integre de volta na `develop`.
+
 ## Como rodar
+
+> Certifique-se de estar na branch **`develop`** (veja acima) antes de subir o projeto.
 
 Forma recomendada (única dependência: Docker):
 
