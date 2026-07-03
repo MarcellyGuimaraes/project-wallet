@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\Users as AdminUsers;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Wallet\Dashboard;
@@ -30,4 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/wallet/deposit', Deposit::class)->name('wallet.deposit');
     Route::get('/wallet/transfer', Transfer::class)->name('wallet.transfer');
     Route::get('/wallet/history', History::class)->name('wallet.history');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/users', AdminUsers::class)->name('admin.users');
 });

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Wallet\Deposit;
 use App\Livewire\Wallet\History;
@@ -36,6 +37,33 @@ class WalletFlowTest extends TestCase
 
         $user = User::whereEmail('ana@example.com')->firstOrFail();
         $this->assertSame('25.00', $user->wallet->balance);
+    }
+
+    public function test_registration_normalizes_email_case_and_whitespace(): void
+    {
+        Livewire::test(Register::class)
+            ->set('name', 'Ana Silva')
+            ->set('email', '  Ana@Example.com  ')
+            ->set('document', '52998224725')
+            ->set('password', 'password123')
+            ->set('password_confirmation', 'password123')
+            ->call('register')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('users', ['email' => 'ana@example.com']);
+    }
+
+    public function test_login_is_case_insensitive_on_email(): void
+    {
+        $user = User::factory()->create(['email' => 'ana@example.com']);
+
+        Livewire::test(Login::class)
+            ->set('email', 'Ana@Example.com')
+            ->set('password', 'password')
+            ->call('login')
+            ->assertHasNoErrors();
+
+        $this->assertAuthenticatedAs($user);
     }
 
     public function test_registration_rejects_an_invalid_document(): void

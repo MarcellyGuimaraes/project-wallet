@@ -21,9 +21,19 @@ class Login extends Component
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
+        $email = mb_strtolower(trim($this->email));
+
+        if (! Auth::attempt(['email' => $email, 'password' => $this->password])) {
             throw ValidationException::withMessages([
                 'email' => 'Credenciais inválidas.',
+            ]);
+        }
+
+        if (Auth::user()->isBlocked()) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Esta conta foi bloqueada. Entre em contato com o suporte.',
             ]);
         }
 

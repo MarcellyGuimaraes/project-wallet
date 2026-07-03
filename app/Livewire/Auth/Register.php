@@ -26,6 +26,7 @@ class Register extends Component
     public function register(RegisterUserService $registerUserService): void
     {
         $this->document = preg_replace('/\D/', '', $this->document);
+        $this->email = mb_strtolower(trim($this->email));
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],

@@ -43,6 +43,8 @@ case "$1" in
         # Otimiza autoload/descoberta de pacotes e roda migrations
         php artisan package:discover --ansi || true
         php artisan migrate --force
+        # Seeder idempotente (garante o usuário admin em máquinas novas)
+        php artisan db:seed --force || true
         php artisan storage:link || true
 
         echo "Iniciando o servidor em http://0.0.0.0:8000"

@@ -17,6 +17,9 @@
                     <a href="{{ route('wallet.deposit') }}" class="text-sm text-gray-600 hover:text-gray-900">Depositar</a>
                     <a href="{{ route('wallet.transfer') }}" class="text-sm text-gray-600 hover:text-gray-900">Transferir</a>
                     <a href="{{ route('wallet.history') }}" class="text-sm text-gray-600 hover:text-gray-900">Histórico</a>
+                    @if (auth()->user()->isAdmin())
+                        <a href="{{ route('admin.users') }}" class="text-sm text-gray-600 hover:text-gray-900">Administração</a>
+                    @endif
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="text-sm text-gray-500">{{ auth()->user()->name }}</span>
