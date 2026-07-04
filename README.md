@@ -1,8 +1,27 @@
 # Wallet — Carteira Financeira
 
+![Tela inicial](docs/screenshots/home.png)
+
 Desafio técnico full stack: uma aplicação web onde usuários se cadastram, autenticam e
 realizam depósitos, transferências e estornos, com saldo consistente sob concorrência
 e histórico auditável de todas as movimentações.
+
+## Interface
+
+Capturas da aplicação rodando (tema claro, layout responsivo). As imagens ficam em
+[`docs/screenshots/`](docs/screenshots/).
+
+| Login e cadastro | Dashboard (saldo + ações) |
+|:---:|:---:|
+| ![Login e cadastro](docs/screenshots/login.png) | ![Dashboard](docs/screenshots/dashboard.png) |
+
+| Depósito | Transferência |
+|:---:|:---:|
+| ![Depósito](docs/screenshots/deposito.png) | ![Transferência](docs/screenshots/transferencia.png) |
+
+| Histórico e estorno | Admin — gestão de usuários |
+|:---:|:---:|
+| ![Histórico](docs/screenshots/historico.png) | ![Admin de usuários](docs/screenshots/admin-usuarios.png) |
 
 ## Stack e por quê
 
