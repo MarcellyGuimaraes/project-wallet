@@ -4,181 +4,152 @@
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    /* Tipografia serifada elegante */
-    --font-sans: 'Cormorant Garamond', ui-serif, Georgia, 'Times New Roman', serif;
-    --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+    --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-serif: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-    /* Azul-marinho profundo */
-    --color-navy-950: #050b18;
-    --color-navy-900: #0a1830;
-    --color-navy-800: #102142;
-    --color-navy-700: #17294f;
+    /* Os nomes legados permanecem para evitar espalhar alterações pelo markup. */
+    --color-navy-950: #ffffff;
+    --color-navy-900: #f1f5f9;
+    --color-navy-800: #e8edf4;
+    --color-navy-700: #d7dee8;
 
-    /* Dourado refinado */
-    --color-gold-200: #f6e9b8;
-    --color-gold-300: #ecd792;
-    --color-gold-400: #dcc06a;
-    --color-gold-500: #c9a13f;
-    --color-gold-600: #a9852f;
+    --color-gold-200: #1e40af;
+    --color-gold-300: #2563eb;
+    --color-gold-400: #1d4ed8;
+    --color-gold-500: #3b82f6;
+    --color-gold-600: #1e40af;
 
-    /* Platina / creme para textos sobre o marinho */
-    --color-platinum-100: #e9ecf3;
-    --color-platinum-300: #aeb7c7;
-    --color-platinum-500: #7c8698;
+    --color-platinum-100: #0f172a;
+    --color-platinum-300: #475569;
+    --color-platinum-500: #64748b;
 }
 
-/* ============================================================
-   Fundo azul-marinho profundo
-   ============================================================ */
 body.pb-bg {
     background:
-        radial-gradient(1100px 560px at 50% -12%, #16305c 0%, transparent 58%),
-        linear-gradient(180deg, #0a1830 0%, #050b18 100%);
+        radial-gradient(900px 360px at 50% -100px, rgba(59, 130, 246, 0.10), transparent 68%),
+        #eef2f7;
     background-attachment: fixed;
     color: var(--color-platinum-100);
-    font-size: 1.0625rem;
-    letter-spacing: 0.01em;
+    font-size: 1rem;
+    letter-spacing: -0.005em;
 }
 
-/* ============================================================
-   Cartões com textura de metal escovado
-   ============================================================ */
-.pb-card {
+.pb-card,
+.pb-card-hero {
     position: relative;
-    border-radius: 0.75rem;
-    background:
-        repeating-linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.035) 0,
-            rgba(255, 255, 255, 0.035) 1px,
-            transparent 1px,
-            transparent 3px
-        ),
-        linear-gradient(135deg, #2c313a 0%, #1b1f27 42%, #262b33 100%);
-    border: 1px solid rgba(201, 161, 63, 0.22);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.06),
-        0 12px 30px -14px rgba(0, 0, 0, 0.75);
+    border-radius: 0.875rem;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #d8e0ea;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 12px 30px -20px rgba(15, 23, 42, 0.28);
     color: var(--color-platinum-100);
 }
 
-/* Cartão-destaque (saldo) — metal mais nobre, borda dourada marcante */
 .pb-card-hero {
-    position: relative;
     overflow: hidden;
-    border-radius: 0.75rem;
     background:
-        repeating-linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.05) 0,
-            rgba(255, 255, 255, 0.05) 1px,
-            transparent 1px,
-            transparent 3px
-        ),
-        linear-gradient(135deg, #3b414b 0%, #20242b 46%, #2b313b 100%);
-    border: 1px solid rgba(201, 161, 63, 0.4);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.09),
-        0 24px 48px -20px rgba(0, 0, 0, 0.85);
+        radial-gradient(600px 220px at 100% 0%, rgba(59, 130, 246, 0.13), transparent 62%),
+        linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    border-color: #bfdbfe;
+    box-shadow: 0 16px 40px -28px rgba(30, 64, 175, 0.38);
 }
 
-/* Brilho diagonal sutil no cartão-destaque */
 .pb-card-hero::after {
     content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(115deg, transparent 40%, rgba(246, 233, 184, 0.08) 50%, transparent 60%);
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: #2563eb;
     pointer-events: none;
 }
 
-/* ============================================================
-   Logo "W" e emblemas em dourado escovado
-   ============================================================ */
 .pb-logo {
-    background: linear-gradient(135deg, #f6e9b8 0%, #d4af37 46%, #a9852f 100%);
-    color: #241905;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.55),
-        0 3px 8px rgba(0, 0, 0, 0.45);
-    font-family: var(--font-serif);
+    background: #2563eb;
+    color: #ffffff;
+    border: 1px solid #1d4ed8;
+    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.2);
+    font-family: var(--font-sans);
     font-weight: 700;
 }
 
-/* ============================================================
-   Botões
-   ============================================================ */
 .pb-btn-gold {
-    background: linear-gradient(180deg, #f2dd8c 0%, #d4af37 55%, #b58f2c 100%);
-    color: #241905;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.5),
-        0 8px 20px -10px rgba(201, 161, 63, 0.65);
+    background: #2563eb;
+    color: #ffffff;
+    border: 1px solid #2563eb;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 6px 14px -8px rgba(37, 99, 235, 0.65);
     font-weight: 600;
-    letter-spacing: 0.03em;
-    transition: filter 0.2s ease, transform 0.1s ease;
+    letter-spacing: 0;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
 }
 
 .pb-btn-gold:hover {
-    filter: brightness(1.06);
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #ffffff;
+    box-shadow: 0 8px 18px -10px rgba(37, 99, 235, 0.75);
 }
 
-.pb-btn-gold:active {
-    transform: scale(0.99);
+.pb-btn-gold:active,
+.pb-btn-outline:active {
+    transform: translateY(1px);
 }
 
 .pb-btn-outline {
-    background: transparent;
-    color: var(--color-gold-300);
-    border: 1px solid rgba(201, 161, 63, 0.5);
-    letter-spacing: 0.03em;
+    background: #ffffff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    letter-spacing: 0;
+    font-weight: 600;
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
 }
 
 .pb-btn-outline:hover {
-    background: rgba(201, 161, 63, 0.1);
-    border-color: rgba(201, 161, 63, 0.85);
+    background: #dbeafe;
+    border-color: #3b82f6;
+    color: #1e3a8a;
 }
 
-.pb-btn-outline:active {
-    transform: scale(0.99);
-}
-
-/* ============================================================
-   Campos de formulário sobre o marinho
-   ============================================================ */
 .pb-input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(201, 161, 63, 0.24);
-    color: var(--color-platinum-100);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
     border-radius: 0.5rem;
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .pb-input::placeholder {
-    color: rgba(174, 183, 199, 0.45);
+    color: #94a3b8;
 }
 
 .pb-input:focus {
     outline: none;
-    border-color: rgba(201, 161, 63, 0.75);
-    box-shadow: 0 0 0 1px rgba(201, 161, 63, 0.55);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.13);
 }
 
-/* ============================================================
-   Texto com acabamento dourado
-   ============================================================ */
 .pb-gold-text {
-    background: linear-gradient(180deg, #f6e9b8 0%, #d4af37 90%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    background: none;
+    color: #0f172a;
 }
 
-/* Régua dourada decorativa */
 .pb-rule {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(201, 161, 63, 0.5), transparent);
+    height: 2px;
+    background: #2563eb;
+    border-radius: 999px;
+}
+
+table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+table tbody tr:hover {
+    background: #eef4fb;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline: 3px solid rgba(59, 130, 246, 0.25);
+    outline-offset: 2px;
 }

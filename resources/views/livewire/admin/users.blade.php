@@ -9,7 +9,7 @@
         @endif
 
         @if ($successMessage)
-            <div class="bg-emerald-500/10 text-emerald-200 text-sm rounded-md p-3 mb-4 border border-emerald-500/30">{{ $successMessage }}</div>
+            <div class="bg-emerald-50 text-emerald-800 text-sm font-medium rounded-md p-3 mb-4 border border-emerald-200">{{ $successMessage }}</div>
         @endif
     </div>
 
@@ -42,7 +42,7 @@
                                     Bloqueada
                                 </span>
                             @else
-                                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium bg-emerald-500/10 text-emerald-200">
+                                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200">
                                     <span class="size-1.5 rounded-full bg-current"></span>
                                     Ativa
                                 </span>

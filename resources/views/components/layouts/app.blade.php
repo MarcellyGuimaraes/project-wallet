@@ -9,18 +9,18 @@
 </head>
 <body class="pb-bg min-h-screen antialiased">
     @auth
-        <nav class="sticky top-0 z-10 bg-navy-950/70 backdrop-blur-md border-b border-gold-500/25">
+        <nav class="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm shadow-slate-200/40">
             <div class="max-w-5xl mx-auto px-4 flex items-center justify-between h-16">
                 <div class="flex items-center gap-8">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 shrink-0">
                         <span class="pb-logo grid place-items-center size-7 rounded-md text-xs">W</span>
-                        <span class="font-serif font-semibold text-platinum-100 tracking-wide">Wallet</span>
+                        <span class="font-semibold text-platinum-100 tracking-tight">Wallet</span>
                     </a>
                     <div class="hidden sm:flex items-center gap-6 h-16">
                         @php
                             $navLink = fn (string $route) => request()->routeIs($route)
                                 ? 'text-gold-300 border-gold-400'
-                                : 'text-platinum-300 border-transparent hover:text-gold-200';
+                                : 'text-platinum-300 border-transparent hover:text-blue-800 hover:border-blue-200';
                         @endphp
                         <a href="{{ route('dashboard') }}" class="h-full flex items-center text-sm font-medium tracking-wide border-b-2 transition-colors {{ $navLink('dashboard') }}">Painel</a>
                         <a href="{{ route('wallet.deposit') }}" class="h-full flex items-center text-sm font-medium tracking-wide border-b-2 transition-colors {{ $navLink('wallet.deposit') }}">Depositar</a>
@@ -33,14 +33,14 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="hidden sm:flex items-center gap-2.5">
-                        <span class="grid place-items-center size-7 rounded-full bg-white/5 text-gold-300 text-xs font-semibold uppercase ring-1 ring-gold-500/30">
+                        <span class="grid place-items-center size-7 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold uppercase ring-1 ring-blue-200">
                             {{ Illuminate\Support\Str::of(auth()->user()->name)->substr(0, 1) }}
                         </span>
                         <span class="text-sm text-platinum-100">{{ auth()->user()->name }}</span>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="flex items-center gap-1.5 text-sm text-platinum-300 hover:text-gold-200 transition-colors">
+                        <button type="submit" class="flex items-center gap-1.5 text-sm text-platinum-300 hover:text-blue-800 transition-colors">
                             Sair
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="size-4">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -54,7 +54,7 @@
         </nav>
     @endauth
 
-    <main class="max-w-5xl mx-auto px-4 py-10">
+    <main class="max-w-5xl mx-auto px-4 py-8 sm:py-10">
         {{ $slot }}
     </main>
 

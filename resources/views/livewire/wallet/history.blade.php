@@ -9,7 +9,7 @@
         @endif
 
         @if ($successMessage)
-            <div class="bg-emerald-500/10 text-emerald-200 text-sm rounded-md p-3 mb-4 border border-emerald-500/30">{{ $successMessage }}</div>
+            <div class="bg-emerald-50 text-emerald-800 text-sm font-medium rounded-md p-3 mb-4 border border-emerald-200">{{ $successMessage }}</div>
         @endif
     </div>
 
@@ -30,14 +30,14 @@
                     @php
                         $signed = $transaction->signedAmountFor($wallet->id);
                         $statusClasses = match ($transaction->status) {
-                            App\Enums\TransactionStatus::Completed => 'bg-emerald-500/10 text-emerald-200',
+                            App\Enums\TransactionStatus::Completed => 'bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200',
                             App\Enums\TransactionStatus::Reversed => 'bg-white/5 text-platinum-300',
                             App\Enums\TransactionStatus::Failed => 'bg-red-500/10 text-red-200',
                         };
                     @endphp
                     <tr>
                         <td class="py-3 px-6">
-                            <span class="grid place-items-center size-7 rounded-full ring-1 {{ $signed >= 0 ? 'bg-emerald-500/10 text-emerald-300 ring-emerald-500/25' : 'bg-red-500/10 text-red-300 ring-red-500/25' }}">
+                            <span class="grid place-items-center size-7 rounded-full ring-1 {{ $signed >= 0 ? 'bg-emerald-50 text-emerald-700 ring-emerald-200' : 'bg-red-500/10 text-red-300 ring-red-500/25' }}">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3">
                                     @if ($signed >= 0)
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5M5 12l7-7 7 7" />
@@ -49,7 +49,7 @@
                         </td>
                         <td class="py-3 px-6 text-platinum-300 whitespace-nowrap">{{ $transaction->created_at->format('d/m/Y H:i') }}</td>
                         <td class="py-3 px-6 text-platinum-100 font-medium">{{ $transaction->type->label() }}</td>
-                        <td class="py-3 px-6 font-medium tabular-nums text-right whitespace-nowrap {{ $signed >= 0 ? 'text-emerald-300' : 'text-red-300' }}">
+                        <td class="py-3 px-6 font-semibold tabular-nums text-right whitespace-nowrap {{ $signed >= 0 ? 'text-emerald-700' : 'text-red-300' }}">
                             {{ $signed >= 0 ? '+' : '−' }} R$ {{ number_format(abs($signed), 2, ',', '.') }}
                         </td>
                         <td class="py-3 px-6">

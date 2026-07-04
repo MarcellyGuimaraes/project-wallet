@@ -6,7 +6,7 @@
     </p>
 
     @if ($successMessage)
-        <div class="bg-emerald-500/10 text-emerald-200 text-sm rounded-md p-3 mb-4 border border-emerald-500/30">{{ $successMessage }}</div>
+        <div class="bg-emerald-50 text-emerald-800 text-sm font-medium rounded-md p-3 mb-4 border border-emerald-200">{{ $successMessage }}</div>
     @endif
 
     <form wire:submit="transfer" class="space-y-4">
